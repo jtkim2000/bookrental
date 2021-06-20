@@ -105,7 +105,7 @@
     
 ### 최종 완성된 모형
 
-![image](https://user-images.githubusercontent.com/20077391/121104501-24269280-c83d-11eb-9f13-dc342d695069.png)
+![image](https://user-images.githubusercontent.com/82795757/122666276-47f7ba00-d1e7-11eb-9a09-1f2e0ed71ff9.png)
 
 
 ## 헥사고날 아키텍처 다이어그램 도출

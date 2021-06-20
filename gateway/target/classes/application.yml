@@ -1,0 +1,98 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: member
+          uri: http://localhost:8081
+          predicates:
+            - Path=/members/** 
+        - id: book
+          uri: http://localhost:8082
+          predicates:
+            - Path=/books/** 
+        - id: bookRentalRequest
+          uri: http://localhost:8083
+          predicates:
+            - Path=/bookRequests/** 
+        - id: bookRental
+          uri: http://localhost:8084
+          predicates:
+            - Path=/bookRentals/** 
+        - id: warningLetter
+          uri: http://localhost:8085
+          predicates:
+            - Path=/warningLetters/** 
+        - id: reasonLetter
+          uri: http://localhost:8086
+          predicates:
+            - Path=/reasonLetters/** 
+        - id: bookAdmin
+          uri: http://localhost:8087
+          predicates:
+            - Path= /bookRentalMonitoringPages/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: member
+          uri: http://member:8080
+          predicates:
+            - Path=/members/** 
+        - id: book
+          uri: http://book:8080
+          predicates:
+            - Path=/books/** 
+        - id: bookRentalRequest
+          uri: http://bookRentalRequest:8080
+          predicates:
+            - Path=/bookRequests/** 
+        - id: bookRental
+          uri: http://bookRental:8080
+          predicates:
+            - Path=/bookRentals/** 
+        - id: warningLetter
+          uri: http://warningLetter:8080
+          predicates:
+            - Path=/warningLetters/** 
+        - id: reasonLetter
+          uri: http://reasonLetter:8080
+          predicates:
+            - Path=/reasonLetters/** 
+        - id: bookAdmin
+          uri: http://bookAdmin:8080
+          predicates:
+            - Path= /bookRentalMonitoringPages/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080

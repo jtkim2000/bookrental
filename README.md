@@ -1,6 +1,6 @@
-# OnlineBookStore
+# BookRental
 
-# 온라인 서점
+# 도서대여 서비스
 
 - 체크포인트 : https://workflowy.com/s/assessment-check-po/T5YrzcMewfo4J6LW
 

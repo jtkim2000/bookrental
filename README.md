@@ -49,10 +49,10 @@
 
 비기능적 요구사항
 1. 트랜잭션
-    1. 주문 시 재고가 부족할 경우 주문이 되지 않는다. (Sync 호출)
+    1. 도서 대여 신청 수량만큼 도서 재고에 즉시 반영되어야 한다. (Sync 호출)
 1. 장애격리
-    1. 고객/마케팅/배달 관리 기능이 수행되지 않더라도 주문은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
-    2. 재고시스템이 과중되면 사용자를 잠시동안 받지 않고 재접속하도록 유도한다  Circuit breaker, fallback
+    1. 회원/도서/도서대여/경고장/사유서/BookAdmin 관리 기능이 수행되지 않더라도 도서대여신청은 중단없이 신청 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
+    2. 회원등록 시스템이 과중되면 사용자를 잠시동안 받지 않고 재접속하도록 유도한다  Circuit breaker, fallback
 
 
 # 분석/설계

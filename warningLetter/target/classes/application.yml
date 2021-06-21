@@ -62,3 +62,6 @@ spring:
         event-out:
           destination: bookrental
           contentType: application/json
+warningmsg:
+  letter:
+    contents: ${configmap} 

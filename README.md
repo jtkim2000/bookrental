@@ -51,8 +51,8 @@
 1. 트랜잭션
     1. 도서 대여 신청 수량만큼 도서 재고에 즉시 반영되어야 한다. (Sync 호출)
 1. 장애격리
-    1. 회원/도서/도서대여/경고장/사유서/BookAdmin 관리 기능이 수행되지 않더라도 도서대여신청은 중단없이 신청 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
-    2. 회원등록 시스템이 과중되면 사용자를 잠시동안 받지 않고 재접속하도록 유도한다  Circuit breaker, fallback
+    1. 회원등록/도서대여(BookRental)/경고장/사유서/BookAdmin 관리 기능이 수행되지 않더라도 도서대여신청(BookRentalRequest)은 중단없이 신청 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
+    2. 회원등록 시스템이 과중되면 사용자를 잠시동안 받지 않고 재접속하도록 유도한다  Circuit breaker, fallback  <---수정필요
 
 
 # 분석/설계
@@ -77,17 +77,18 @@
 
 ![image](https://user-images.githubusercontent.com/9324206/118841865-a63d2e80-b903-11eb-90ed-e044f2feb128.png)
 
-    1. 고객이 도서를 주문한다.
-    2. 고객이 주문을 취소할 수 있다.
-    3. 주문이 성공하면 배송을 시작한다.
-    4. 주문이 취소되면 배송을 취소한다.
+    1. 신규 사용자는 회원 등록을 한다.
+    2. 사서는 신규 도서를 등록한다.
+    3. 회원은 도서 대여 신청한다.
+    4. 도서 대여신청 수량 만큼 재고를 감소시킨다. (Sync 호출)
+    5. 회원에게 도서를 대여한다.
 
 ![image](https://user-images.githubusercontent.com/9324206/118842116-e13f6200-b903-11eb-899b-b415d084e314.png)
 
-    1. 관리자가 신규도서를 등록한다.
-    2. 신규 도서가 등록되면 기존 고객에게 알려준다.
-    3. 관리자는 도서 재고를 추가한다.
-    4. 도서 재고가 추가되면 재고부족으로 못 구매한 고객에게 알려준다.
+    1. 회원은 도서를 반납한다.
+    2. 반납된 도서 수량 만큼 재고를 증가시킨다.
+    3. 반납된 도서의 상태가 불량(BAD)이면 회원에게 경고장을 발송한다.
+    4. 경고장을 받는 회원의 등급(AAA->BBB)과 상태(GOOD->BAD)를 강등시킨다.
     
 ![image](https://user-images.githubusercontent.com/9324206/118843424-02ed1900-b905-11eb-9f30-502574dc47cc.png)
 

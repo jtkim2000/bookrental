@@ -41,6 +41,27 @@ server:
 
 spring:
   profiles: docker
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://jtkim2000dbserver.database.windows.net:1433;database=bookrentaldb;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    #username: dbadmin
+    #password: jtkim2000!!
+    username: ${SQLSERVER_USERNAME}
+    password: ${SQLSERVER_PASSWORD}
+  # datasource:
+  #   driver-class-name: org.h2.Driver
+  #   url: jdbc:h2:file:./customerdb
+  #   username: customerUser
+  #   password: 1234
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        # dialect: org.hibernate.dialect.MySQL57Dialect
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true
   cloud:
     stream:
       kafka:

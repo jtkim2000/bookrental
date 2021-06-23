@@ -35,3 +35,14 @@ spec:
             timeoutSeconds: 2
             periodSeconds: 5
             failureThreshold: 5
+          # resources:
+          #   requests:
+          #     cpu: 300m
+          #     ## memory: 256Mi
+          #   limits:
+          #     cpu: 500m
+          #     ## memory: 256Mi
+      ## volumes:
+      ## - name: bookrentalrequest-vol
+      ##   persistentVolumeClaim:
+      ##     claimName: bookrentalrequesth2-pvc

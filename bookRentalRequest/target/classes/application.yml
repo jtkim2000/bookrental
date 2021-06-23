@@ -35,6 +35,15 @@ logging:
   level:
     org.hibernate.type: trace
     org.springframework.cloud: debug
+
+feign:
+  hystrix:
+    enabled: true
+hystrix:
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 3000
+      circuitBreaker.requestVolumeThreshold: 1
 server:
   port: 8083
 ---
@@ -62,3 +71,6 @@ spring:
         event-out:
           destination: bookrental
           contentType: application/json
+feign:
+  hystrix:
+    enabled: true

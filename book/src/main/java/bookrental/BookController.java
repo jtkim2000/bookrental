@@ -34,6 +34,15 @@ public class BookController {
 
                 Book book = bookRepository.findByBookId(bookId);
 
+                // Hystrix를 통한 CB 점검용 timout 발생
+                // 테스트를 위해 bookId = 3 인경우 5초간 sleep
+                // if (book.getBookId().longValue() == 3) {
+                //         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                //         System.out.println("Hystrix를 통한 CB발생 테스트 : 5초간 sleep");
+                //         Thread.sleep(5000);
+                //         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                // }
+
                 if(book.getQty() >= qty) {
                         book.setQty(book.getQty() - qty);
                         bookRepository.save(book);

@@ -1059,14 +1059,12 @@ bookrental/member/kubernetes/deployment.yml
 ![image](https://user-images.githubusercontent.com/82795757/123299314-5aaa2000-d554-11eb-899e-4da61f70fd65.png)
 
 
-- Delivery pod에 Liveness Probe 옵션 적용 확인
+- Delivery pod에 Liveness Probe 옵션 적용 및 작동 확인
 
-![image](https://user-images.githubusercontent.com/20077391/120981097-458e6c80-c7b2-11eb-9a3c-d17396a59048.png)
+![image](https://user-images.githubusercontent.com/82795757/123301819-05bbd900-d557-11eb-9854-b0c56fab1cf0.png)
 
 
 - Liveness 확인 실패에 따른 retry발생 확인 (서비스 강제 종료 후 이미지 가져와서 Restart 등 진행 확인)
-
-![image](https://user-images.githubusercontent.com/82795757/123301019-20da1900-d556-11eb-9c77-2dc22085003d.png)
 
 ![image](https://user-images.githubusercontent.com/82795757/123301373-8c23eb00-d556-11eb-97f0-292535c0112a.png)
 

@@ -862,6 +862,7 @@ spec:
 
 
 - application.yml 파일에 configmap 연결
+
 ![image](https://user-images.githubusercontent.com/82795757/123264650-30953580-d535-11eb-9705-c4183e64befc.png)
 
 

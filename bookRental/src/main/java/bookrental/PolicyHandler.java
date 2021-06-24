@@ -24,10 +24,6 @@ public class PolicyHandler{
 
         // 책을 빌려주면 상태(status)를 "Book Lent"로 변경한다.
         BookRental bookRental = new BookRental();
-        // Optional<BookRental> bookRentalOptional = bookRentalRepository.findById(bookRequested.getRequestId());
-        // bookRental = bookRentalOptional.get();
-        // bookRental.setStatus("Book Lent !!");
-        // bookRentalRepository.save(bookRental);
 
         bookRental.setBookId(bookRequested.getBookId());
         bookRental.setBookStatus("GOOD");  // 책을 빌려줄때 책 상태는 "GOOD"으로 설정

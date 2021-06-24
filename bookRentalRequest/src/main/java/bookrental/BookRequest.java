@@ -65,7 +65,4 @@ public class BookRequest {
         this.status = status;
     }
 
-
-
-
 }

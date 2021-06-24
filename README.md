@@ -112,7 +112,7 @@
 
 ![image](https://user-images.githubusercontent.com/82795757/123220516-00d03880-d509-11eb-9622-bf0547211c0c.png)
     
-    - 렉사고날 아키텍처 다이어그램에 Inbound adaptor와 Outbound adaptor를 구분함
+    - 헥사고날 아키텍처 다이어그램에 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 Pub/Sub 과 Req/Resp 를 구분함
     - 서브 도메인과 바운디드 컨텍스트의 분리
 

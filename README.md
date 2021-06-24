@@ -27,7 +27,7 @@
     - [Deploy / Pipeline](#deploy--pipeline)
     - [Config Map](#configmap)
     - [Secret](#secret)
-    - [Circuit Breaker와 Fallback 처리](#circuit-breaker와-fallback-처리)
+    - [Circuit Breaker](#circuit-breaker와-fallback-처리)
     - [오토스케일 아웃](#오토스케일-아웃)
     - [Zero-downtime deploy (Readiness Probe) 무정지 재배포](#zero-downtime-deploy-readiness-probe-무정지-재배포)
     - [Self-healing (Liveness Probe))](#self-healing-liveness-probe)
@@ -1054,9 +1054,9 @@ Shortest transaction:           0.00
 
 - Self-healing 확인을 위한 Liveness Probe 옵션 변경 (Port 변경)
 
-onlinebookstore/delivery/kubernetes/deployment.yml
+bookrental/member/kubernetes/deployment.yml
 
-![image](https://user-images.githubusercontent.com/20077391/120980312-7621d680-c7b1-11eb-885f-cd9bc9a9011f.png)
+![image](https://user-images.githubusercontent.com/82795757/123299314-5aaa2000-d554-11eb-899e-4da61f70fd65.png)
 
 
 - Delivery pod에 Liveness Probe 옵션 적용 확인
@@ -1064,10 +1064,11 @@ onlinebookstore/delivery/kubernetes/deployment.yml
 ![image](https://user-images.githubusercontent.com/20077391/120981097-458e6c80-c7b2-11eb-9a3c-d17396a59048.png)
 
 
-- Liveness 확인 실패에 따른 retry발생 확인
+- Liveness 확인 실패에 따른 retry발생 확인 (서비스 강제 종료 후 이미지 가져와서 Restart 등 진행 확인)
 
-![image](https://user-images.githubusercontent.com/20077391/120981283-7e2e4600-c7b2-11eb-92ef-2d5e4f2837eb.png)
+![image](https://user-images.githubusercontent.com/82795757/123301019-20da1900-d556-11eb-9c77-2dc22085003d.png)
 
+![image](https://user-images.githubusercontent.com/82795757/123301373-8c23eb00-d556-11eb-97f0-292535c0112a.png)
 
 
 이상으로 12가지 체크포인트가 구현 및 검증 완료되었음 확인하였다.

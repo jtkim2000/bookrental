@@ -74,3 +74,8 @@ spring:
 feign:
   hystrix:
     enabled: true
+hystrix:
+  command:
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 3000
+      circuitBreaker.requestVolumeThreshold: 1

@@ -19,4 +19,3 @@ public interface BookService {
                                         @RequestParam("qty") Integer qty);
    
 }
-

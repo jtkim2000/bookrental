@@ -88,7 +88,7 @@
     3. 반납된 도서의 상태가 불량(BAD)이면 회원에게 경고장을 발송한다.
     4. 경고장을 받는 회원의 등급(AAA->BBB)과 상태(GOOD->BAD)를 강등시킨다.
     
-![image](https://user-images.githubusercontent.com/9324206/118843424-02ed1900-b905-11eb-9f30-502574dc47cc.png)
+![image](https://user-images.githubusercontent.com/82795757/123212722-1ab94d80-d500-11eb-8596-1fd1b2cec794.png)
 
     1. 경고장을 받은 회원은 사유서(reasonLetter)를 제출한다.
     2. 사유서를 제출한 회원의 등급(AAA->BBB)과 상태(GOOD->BAD)를 원복시킨다..

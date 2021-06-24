@@ -99,7 +99,7 @@
 ![image](https://user-images.githubusercontent.com/82795757/123218510-c49bd880-d506-11eb-9533-973fe6bde7eb.png)
 
     1. 도서 대여 요청이 들어오면 도서의 재고를 즉시 Sync 호출을 통해 확인하고 반영함.
-    2. 회원/경고장/사유서/BookAdmin 서비스 기능이 수행되지 않더라도 도서대여신청(BookRentalRequest) 기능은 중단없이 
+    2. 회원/도서대여(BookRental)/경고장/사유서/BookAdmin 서비스 기능이 수행되지 않더라도 도서대여신청(BookRentalRequest) 기능은 중단없이 
        Async(Event-driven) 방식으로 통신하여 다른 서비스의 장애가 도서대여신청에 영향을 주지 않음(장애 격리).
     3. bookAdmin의 bookRentalMonitoringPage를 통해 회원의 도서 대여 상태를 확인할 수 있음
           
@@ -110,12 +110,11 @@
 
 ## 헥사고날 아키텍처 다이어그램 도출
 
-![image](https://user-images.githubusercontent.com/82795757/122666694-e08f3980-d1e9-11eb-81f2-6867f5e26199.png)
-
+![image](https://user-images.githubusercontent.com/82795757/123220516-00d03880-d509-11eb-9622-bf0547211c0c.png)
     
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
-    - 호출관계에서 PubSub 과 Req/Resp 를 구분함
-    - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
+    - 호출관계에서 Pub/Sub 과 Req/Resp 를 구분함
+    - 서브 도메인과 바운디드 컨텍스트의 분리
 
 
 # 구현:

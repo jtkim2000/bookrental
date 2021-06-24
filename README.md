@@ -717,23 +717,29 @@ http GET http://localhost:8088/bookRentals # 도서대여신청 이벤트가 도
 
 - git에서 소스 가져오기
 ```
-git clone https://github.com/aramidhwan/OnlineBookStore.git
+git clone https://github.com/jtkim2000/bookrental.git
 ```
 - Build 하기
 ```
-cd /book
+cd ./member
 mvn package
 
-cd ../customer
+cd ../book
 mvn package
 
-cd ../customercenter
+cd ../bookrentalrequest
 mvn package
 
-cd ../order
+cd ../bookrental
 mvn package
 
-cd ../delivery
+cd ../warningletter
+mvn package
+
+cd ../reasonletter
+mvn package
+
+cd ../bookadmin
 mvn package
 
 cd ../gateway
@@ -744,30 +750,37 @@ mvn package
 - Docker Image build/Push/
 ```
 
-cd ../gateway
-docker build -t skccteam2acr.azurecr.io/gateway:latest .
-docker push skccteam2acr.azurecr.io/gateway:latest
+cd ../member
+ocker build -t jtkimacr.azurecr.io/member:latest .
+docker push jtkimacr.azurecr.io/member:latest
 
 cd ../book
-docker build -t skccteam2acr.azurecr.io/book:latest .
-docker push skccteam2acr.azurecr.io/book:latest
+docker build -t jtkimacr.azurecr.io/book:latest .
+docker push jtkimacr.azurecr.io/book:latest
 
-cd ../customer
-docker build -t skccteam2acr.azurecr.io/customer:latest .
-docker push skccteam2acr.azurecr.io/customer:latest
+cd ../bookrentalrequest
+docker build -t jtkimacr.azurecr.io/book:latest .
+docker push jtkimacr.azurecr.io/book:latest
 
-cd ../customercenter
-docker build -t skccteam2acr.azurecr.io/customercenter:latest .
-docker push skccteam2acr.azurecr.io/customercenter:latest
+cd ../bookrental
+docker build -t jtkimacr.azurecr.io/book:latest .
+docker push jtkimacr.azurecr.io/book:latest
 
-cd ../order
-docker build -t skccteam2acr.azurecr.io/order:latest .
-docker push skccteam2acr.azurecr.io/order:latest
+cd ../warningletter
+docker build -t jtkimacr.azurecr.io/book:latest .
+docker push jtkimacr.azurecr.io/book:latest
 
-cd ../delivery
-docker build -t skccteam2acr.azurecr.io/delivery:latest .
-docker push skccteam2acr.azurecr.io/delivery:latest
+cd ../reasonletter
+docker build -t jtkimacr.azurecr.io/book:latest .
+docker push jtkimacr.azurecr.io/book:latest
 
+cd ../bookadmin
+docker build -t jtkimacr.azurecr.io/book:latest .
+docker push jtkimacr.azurecr.io/book:latest
+
+cd ../gateway
+docker build -t jtkimacr.azurecr.io/book:latest .
+docker push jtkimacr.azurecr.io/book:latest
 
 ```
 
@@ -775,27 +788,26 @@ docker push skccteam2acr.azurecr.io/delivery:latest
 ```
 kubectl apply -f deployment.yml
 
-- OnlineBookStore/Order/kubernetes/deployment.yml 파일 
+- bookrental/member/kubernetes/deployment.yml 파일 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order
-  namespace: onlinebookstore
+  name: member
   labels:
-    app: order
+    app: member
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: order
+      app: member
   template:
     metadata:
       labels:
-        app: order
+        app: member
     spec:
       containers:
-        - name: order
-          image: skccteam2acr.azurecr.io/order:latest
+        - name: member
+          image: jtkimacr.azurecr.io/member:latest
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -810,28 +822,29 @@ spec:
             httpGet:
               path: '/actuator/health'
               port: 8080
+              #port: 8080 -> 7890
             initialDelaySeconds: 120
             timeoutSeconds: 2
             periodSeconds: 5
             failureThreshold: 5
           env:
-            - name: configmap
-              valueFrom:
-                configMapKeyRef:
-                  name: resturl
-                  key: url
-          resources:
-            requests:
-              cpu: 300m
-              # memory: 256Mi
-            limits:
-              cpu: 500m
-              # memory: 256Mi
+          - name: SQLSERVER_USERNAME
+            valueFrom:
+              secretKeyRef: 
+                name: sqlserver-basic-auth
+                key: username
+          - name: SQLSERVER_PASSWORD
+            valueFrom:
+              secretKeyRef: 
+                name: sqlserver-basic-auth
+                key: password
 ```	  
 
 - deploy 완료
 
-![image](https://user-images.githubusercontent.com/20077391/121022073-fc9fdd80-c7dc-11eb-9f50-962556056728.png)
+--> kubectl get all
+
+![image](https://user-images.githubusercontent.com/82795757/123262040-6c7acb80-d532-11eb-9c0d-fa95d52179de.png)
 
 
 ## ConfigMap 

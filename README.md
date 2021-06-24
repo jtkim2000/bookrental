@@ -329,16 +329,17 @@ http GET http://localhost:8088/bookRentalMonitoringPages
 
 
 2. 장애격리
-고객/고객센터/배달 관리 기능이 수행되지 않더라도 주문은 365일 24시간 받을 수 있어야 한다 Async (event-driven), Eventual Consistency
+회원등록/도서대여/경고장/사유서/BookAdmin 관리 기능이 수행되지 않더라도 도서대여신청(BookRentalRequest) 기능은 중단없이 Async(Event-driven) 방식으로 통신, 장애 격리가 되어야 한다.
+Async (event-driven), Eventual Consistency
 
---> 고객/고객센터/배달 마이크로서비스를 모두 내리고 주문을 생성했을때, 정상적으로 주문됨을 확인함
+--> 회원등록/도서대여/경고장/사유서/BookAdmin 서비스를 모두 내린 상태에서도 도서대여신청을 받을 수 있음을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121018620-9a91a900-c7d9-11eb-89fc-bdd37313434e.png)
 ![image](https://user-images.githubusercontent.com/20077391/121018208-25be6f00-c7d9-11eb-8b1a-106718b53453.png)
 
 
-3. 재고시스템이 과중되면 사용자를 잠시동안 받지 않고 재접속하도록 유도한다 Circuit breaker, fallback
+3. 도서(Book) 서비스가 과중되면 사용자를 잠시동안 받지않고 재접속하도록 유도한다. Circuit Breaker, fallback  <---- fallback 구현 후 수정 필요
 
---> 뒤의 Hystrix를 통한 Circuit Break 구현에서 검증하도록 한다.
+--> 운영단계의 Hystrix를 통한 Circuit Breaker 구현에서 검증하도록 함.
 
 ## Saga
 분석/설계 및 구현을 통해 이벤트를 Publish/Subscribe 하도록 구현하였다.

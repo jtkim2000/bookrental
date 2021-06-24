@@ -895,57 +895,56 @@ kubectl create configmap warnmsg --from-literal=msg=PleaseCareBook
 ![image](https://user-images.githubusercontent.com/82795757/123265633-32abc400-d536-11eb-8f4a-cbe15c609970.png)
 
 
-## Circuit Breaker와 Fallback 처리
+## Circuit Breaker 구현
 
 * Spring FeignClient + Hystrix를 사용하여 구현함
 
-시나리오는 주문(Order)-->재고(Book) 확인 시 주문 요청에 대한 재고확인이 3초를 넘어설 경우 Circuit Breaker 를 통하여 장애격리.
+시나리오는 도서대여신청(BookRentalRequest)-->도서(Book) 확인 시 도서 수량 확인 및 수량 반영 요청에 대한 응답이 3초를 넘어설 경우 Circuit Breaker 를 통하여 장애격리.
 
-- Hystrix 를 설정:  FeignClient 요청처리에서 처리시간이 3초가 넘어서면 CB가 동작하도록 (요청을 빠르게 실패처리, 차단) 설정
-                    추가로, 테스트를 위해 1번만 timeout이 발생해도 CB가 발생하도록 설정
+- Hystrix 를 설정:  FeignClient 요청처리에서 처리시간이 3초가 넘어서면 Circuit Breaker가 동작하도록 (요청을 빠르게 실패처리, 차단) 설정
+                    시연을 위해 1번만 timeout이 발생해도 Circuit Breaker가 발생하도록 설정함.
 ```
 # application.yml
 ```
 ![image](https://user-images.githubusercontent.com/20077391/120970089-ed516d80-c7a5-11eb-8abb-d57cdbf77065.png)
 
 
-- 호출 서비스(주문)에서는 재고API 호출에서 문제 발생 시 주문건을 OutOfStock 처리하도록 FallBack 구현
+- 호출 서비스(도서대여요청:BookRentalRequest)에서는 도서수량확인용 API 호출에서 문제 발생 시 타임아웃발생하도록 처리
 ```
-# (Order) BookService.java 
+# (BookRentalRequest) BookService.java 
 ```
-![image](https://user-images.githubusercontent.com/20077391/121100878-b034bc00-c835-11eb-97de-2bec90b7f3b0.png)
+
+![image](https://user-images.githubusercontent.com/82795757/123278996-6b519a80-d542-11eb-9e9d-a6ff61477f58.png)
 
 
-- 피호출 서비스(책재고:Book)에서 테스트를 위해 bookId가 2인 주문건에 대해 sleep 처리
+- 피호출 서비스인 Book서비스(책수량확인:/books/checkBookQtyAndModifyQty())에서 테스트를 위해 bookId가 5인 대여요청 건에 대해 sleep 5초 줌(응답 지연이 3초 넘게)
 ```
 # (Book) BookController.java 
 ```
-![image](https://user-images.githubusercontent.com/20077391/120971537-b54b2a00-c7a7-11eb-9595-8fa8cb444be5.png)
+![image](https://user-images.githubusercontent.com/82795757/123293604-19fbd800-d54f-11eb-84b9-532813ec72b5.png)
 
 
 
 * 서킷 브레이커 동작 확인:
 
-bookId가 1번 인 경우 정상적으로 주문 처리 완료
+bookId가 6번 인 경우 정상적으로 주문 처리 완료
 ```
-# http POST http://52.141.32.129:8080/orders bookId=1 customerId=4 qty=1
-```
-![image](https://user-images.githubusercontent.com/20077391/120970620-a152f880-c7a6-11eb-843a-855d85678638.png)
+# http POST http://20.41.87.25:8080/bookRequests memberId=1 bookId=6 qty=10
 
-bookId가 2번 인 경우 CB에 의한 timeout 발생 확인 (Order건은 OutOfStocked 처리됨)
 ```
-# http POST http://52.141.32.129:8080/orders bookId=2 customerId=4 qty=1
+![image](https://user-images.githubusercontent.com/82795757/123293815-431c6880-d54f-11eb-8496-80e36177d6fe.png)
+
+
+bookId가 5번 인 경우 Circuit Breaker에 의한 timeout 발생 확인
 ```
-![image](https://user-images.githubusercontent.com/20077391/120970699-bcbe0380-c7a6-11eb-8c71-ad71101ca1dc.png)
-
-time 아웃이 연달아 2번 발생한 경우 CB가 OPEN되어 Book 호출이 아예 차단된 것을 확인 (테스트를 위해 circuitBreaker.requestVolumeThreshold=1 로 설정)
-
-![image](https://user-images.githubusercontent.com/20077391/120970889-fabb2780-c7a6-11eb-9ab9-e44700c270a7.png)
+# http POST http://20.41.87.25:8080/bookRequests memberId=3 bookId=5 qty=30
+```
+![image](https://user-images.githubusercontent.com/82795757/123293930-5a5b5600-d54f-11eb-9eba-68eb5830011c.png)
 
 
 일정시간 뒤에는 다시 주문이 정상적으로 수행되는 것을 알 수 있다.
 
-![image](https://user-images.githubusercontent.com/20077391/120973450-ea587c00-c7a9-11eb-863b-f15dda3bdaa9.png)
+![image](https://user-images.githubusercontent.com/82795757/123294454-d48bda80-d54f-11eb-8c4b-8dc1b6c34f43.png)
 
 
 - 운영시스템은 죽지 않고 지속적으로 CB 에 의하여 적절히 회로가 열림과 닫힘이 벌어지면서 Thread 자원 등을 보호하고 있음을 보여줌.

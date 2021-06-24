@@ -333,8 +333,8 @@ http GET http://localhost:8088/bookRentalMonitoringPages
 Async (event-driven), Eventual Consistency
 
 --> 회원등록/도서대여/경고장/사유서/BookAdmin 서비스를 모두 내린 상태에서도 도서대여신청을 받을 수 있음을 확인함.
-![image](https://user-images.githubusercontent.com/20077391/121018620-9a91a900-c7d9-11eb-89fc-bdd37313434e.png)
-![image](https://user-images.githubusercontent.com/20077391/121018208-25be6f00-c7d9-11eb-8b1a-106718b53453.png)
+
+![image](https://user-images.githubusercontent.com/82795757/123244463-eb660900-d51e-11eb-884b-ddeb0730f528.png)
 
 
 3. 도서(Book) 서비스가 과중되면 사용자를 잠시동안 받지않고 재접속하도록 유도한다. Circuit Breaker, fallback  <---- fallback 구현 후 수정 필요

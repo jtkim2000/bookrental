@@ -227,6 +227,7 @@ public class BookRequest {
 ```
 - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (H2, SQL Server) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다. (로컬개발환경에서는 모두 H2를, 쿠버네티스에서는 H2와 SQLServer를 각각 사용하였다)
 ```
+[ bookRentalRequest 마이크로 서비스 ] -----
 package bookrental;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -235,6 +236,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource(collectionResourceRel="bookRequests", path="bookRequests")
 public interface BookRequestRepository extends PagingAndSortingRepository<BookRequest, Long>{
 }
+
 ```
 - 적용 후 REST API 의 테스트
 ```

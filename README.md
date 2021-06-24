@@ -98,10 +98,12 @@
 
 ![image](https://user-images.githubusercontent.com/9324206/118844711-249ad000-b906-11eb-9e37-42863a2b27ca.png)
 
-    1. 신규 주문이 들어올 시 재고를 Sync 호출을 통해 확인하여 결과에 따라 주문 성공 여부가 결정.
+    1. 도서 대여 요청이 들어오면 도서의 재고를 즉시 Sync 호출을 통해 확인하고 반영함.
+    2. 회원등록/경고장/사유서/BookAdmin 서비스 각각은 Async(Event-driven) 방식으로 구현하여 장애 격리가 됨.
+       도서대여신청(BookRentalRequest) 기능은 중단없이 Async(Event-driven) 방식으로 통신, 장애 격리가 됨.
     2. 고객/마케팅/배달 각각의 기능은 Async (event-driven) 방식으로 통신, 장애 격리가 가능.
-    3. MyPage 를 통해 고객이 주문의 상태를 확인.
-    
+    3. bookAdmin의 bookRentalMonitoringPage를 통해 회원의 도서 대여 상태를 확인할 수 있음
+          
 ### 최종 완성된 모형
 
 ![image](https://user-images.githubusercontent.com/82795757/122666276-47f7ba00-d1e7-11eb-9a09-1f2e0ed71ff9.png)

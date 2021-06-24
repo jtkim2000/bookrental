@@ -850,9 +850,9 @@ spec:
 ## ConfigMap 
 - 시스템별로 변경 가능성이 있는 설정들을 ConfigMap을 사용하여 관리
 - OBookRental 과제에서는 경고장 서비스에서 경고장 발송 시 “경고장 내용”을 ConfigMap처리하기로 함.
-  --> configmap 환경변수의 내용은 "PleaseCareBook"으로 설정하고 경고장 발송 시 활용
+  --> configmap 환경변수의 내용은 "PleaseCareBook"으로 설정하고 경고장 내용으로 지정
 
-- Java 소스에 경고장 내용을 를 변수(api.url.book) 처리(/Order/src/main/java/onlinebookstore/external/BookService.java) 
+- Java 소스에 “경고장 내용”을 환경변수 configmap의 값을 읽어와 경고장 내용을 화면 출력 처리.(/warningletter/src/main/java/bookrental/WarningLetter.java) 
   시스템의 환경변수인 configmap의 값("PleaseCareBook")을 가져와서 warningMsg 변수에 저장
         --> private String warningMsg = System.getenv("configmap");
         
@@ -870,8 +870,13 @@ spec:
 
 ```
 kubectl create configmap warnmsg --from-literal=msg=PleaseCareBook
+```
 
-![image](https://user-images.githubusercontent.com/82795757/123266566-1f4d2880-d537-11eb-9b48-ba7d6c03c8b5.png)
+![image](https://user-images.githubusercontent.com/82795757/123270360-d13a2400-d53a-11eb-9477-6a1f431aa16e.png)
+
+
+```
+kubectl create configmap warnmsg --from-literal=msg=PleaseCareBook
 
 ```
 

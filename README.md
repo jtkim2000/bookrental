@@ -858,7 +858,7 @@ spec:
         
   경고장 발송 위해 시스템 환경변수인 configmap의 값으로 경고장을 발송한다.(화면 출력)
 
-![image](https://user-images.githubusercontent.com/82795757/123263297-c3cd6b80-d533-11eb-8c4b-72307d3c7a8e.png)
+![image](https://user-images.githubusercontent.com/82795757/123267754-52dc8280-d538-11eb-9c25-2094155d3c9a.png)
 
 
 - application.yml 파일에 configmap 연결

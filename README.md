@@ -695,18 +695,19 @@ public class PolicyHandler{
 # 도서대여 서비스 (BookRental) 를 잠시 내려놓음 (ctrl+c)
 
 #도서대여요청 처리
-http POST localhost:8088/orders bookId=1 qty=10 customerId=1   #Success
-http POST localhost:8088/orders bookId=2 qty=20 customerId=2   #Success
+http POST http://localhost:8088/bookRequests memberId=1 bookId=1 qty=10   #Success
+http POST http://localhost:8088/bookRequests memberId=2 bookId=2 qty=20   #Success
 
-#도서대여 상태 확인
-http localhost:8088/bookRentalRequests     # 도서대여요청 상태 안바뀜 확인
+#도서대여 요청 상태 확인
+http localhost:8088/bookRentalRequests     # 도서대여요청이 누적되어 있고 도서대여로 전달안되고 있음
 
 #도서대여 서비스 기동
 cd bookRental
 mvn spring-boot:run
 
-#도서대여요청 상태 확인
-http localhost:8080/bookRentalRequests     # 모든 도서대여신청의 상태가 "Book Lent"로 되어있음을 확인
+#도서대여 상태 확인
+http GET http://localhost:8088/bookRentals # 도서대여신청 이벤트가 도서대여에 전달되어 대여실행되고 모든 도서대여의 상태가 "Book Lent"로 되어있음을 확인
+
 ```
 
 

@@ -491,196 +491,222 @@ BookRental 을 구성하는 마이크로서비스가 사용하는 DBMS를 다음
 - 구버네티스 DB 구성 ---- SQL Server(member, book),  H2 (나머지 서비스)
 
 ```
-# (Book, CustomerCenter, Customer, Delivery) application.yml
+# (Book) application.yml
 
 spring:
   profiles: default
+...
+---
+spring:
+  profiles: docker
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bookdb?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: *****
-    password: *****
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://jtkimdbserver.database.windows.net:1433;database=bookrentaldb;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    username: dbadmin
+    password: jtkim2000!!
+...
+
+# (member) application.yml
+
+spring:
+  profiles: default
+...
+---
 
 spring:
   profiles: docker
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://skccteam2.database.windows.net:1433;database=bookstore;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    url: jdbc:sqlserver://jtkimdbserver.database.windows.net:1433;database=bookrentaldb;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;  
+    #username: dbadmin
+    #password: jtkim2000!!
     username: ${SQLSERVER_USERNAME}
     password: ${SQLSERVER_PASSWORD}
-...
-
-# (Order) application.yml
+    
+==================
+# (BookRentalRequest, BookRental, warningLetter, reasonLetter, bookAdmin) application.yml
 
 spring:
   profiles: default
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:/data/orderdb
-    username: *****
-    password: 
+  <--- 별도 설정이 없으면 H2 DB를 default로 사용하도록 설정되어 있음(pom.xml)
+...
+---
+
+spring:
+  profiles: docker
+  <--- 별도 설정이 없으면 H2 DB를 default로 사용하도록 설정되어 있음(pom.xml)
+...
+  
 ```
 
 
 ## 동기식 호출(Req/Resp) 패턴
 
-분석단계에서의 조건 중 하나로 주문(Order)->책 재고 확인(Book) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 
+분석단계에서의 조건 중 하나로 도서대여요청(BookRentalRequest)->도서(Book)간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 
 호출 프로토콜은 RestController를 FeignClient 를 이용하여 호출하도록 한다. 
 
-- 재고 확인 서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
+- 도서 잔여분 확인을 위해 도서 서비스 호출을 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ```
-# (Order) BookService.java
+# (BoonRentalRequest) BookService.java
 
 
-package onlinebookstore.external;
-
-@FeignClient(name="Book", url="${api.url.book}")
+package bookrental.external;
+...
+@FeignClient(name="book", url="http://book:8080")
 public interface BookService {
 
-    @RequestMapping(method= RequestMethod.GET, path="/books/chkAndModifyStock")
-    public boolean chkAndModifyStock(@RequestParam("bookId") Long bookId,
-                                        @RequestParam("qty") int qty);
-
+    @RequestMapping(method= RequestMethod.GET, path="/books/checkBookQtyAndModifyQty")
+    public void checkBookQtyAndModifyQty(@RequestParam("bookId") Long bookId,
+                                        @RequestParam("qty") Integer qty);
+   
 }
 ```
 
-- 주문을 받은 직후 재고(Book) 확인을 요청하도록 처리
+- 도서 대여 신청을 받은 직후 도서(Book)의 잔여량을 확인하고 요청 수량만큼 잔여량을 감하도록 처리
 ```
 # BookController.java
 
-package onlinebookstore;
+package bookrental;
+...
+@RestController
+public class BookController {
+        @Autowired
+        BookRepository bookRepository;
 
- @RestController
- public class BookController {
-     @Autowired  BookRepository bookRepository;
+        @RequestMapping(value = "/books/checkBookQtyAndModifyQty",
+                method = RequestMethod.GET,
+                produces = "application/json;charset=UTF-8")
 
-     @RequestMapping(value = "/books/chkAndModifyStock",
-             method = RequestMethod.GET,
-             produces = "application/json;charset=UTF-8")
-     public boolean chkAndModifyStock(@RequestParam("bookId") Long bookId,
-                                      @RequestParam("qty")  int qty)
-             throws Exception {
-             
-         boolean status = false;
-         Optional<Book> bookOptional = bookRepository.findByBookId(bookId);
-         if (bookOptional.isPresent()) {
-            Book book = bookOptional.get();
-            // 현 재고보다 주문수량이 적거나 같은경우에만 true 회신
-            if( book.getStock() >= qty){
-                status = true;
-                book.setStockBeforeUpdate(book.getStock());
-                book.setStock(book.getStock() - qty); // 주문수량만큼 재고 감소
-                bookRepository.save(book);
-         }
-      }
+        public void checkBookQtyAndModifyQty(HttpServletRequest request, HttpServletResponse response)
+                throws Exception {
+                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                System.out.println("##### /book/checkBookQtyAndModifyQty  called #####");
+                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+ 
+                Long bookId = Long.valueOf(request.getParameter("bookId"));
+                Integer qty = Integer.parseInt(request.getParameter("qty"));
 
-      return status;
-  }
+                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                System.out.println("##### bookId = " + bookId);
+                System.out.println("##### qty = " + qty);
+                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+                Book book = bookRepository.findByBookId(bookId);
+                ...
+                if(book.getQty() >= qty) {
+                        book.setQty(book.getQty() - qty);
+                        bookRepository.save(book);
+                }
+        }
+ }
 
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 재고 관리 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 도서(Book) 서비스가 장애가 나면 도서대여신청(BookRentalRequest)도 못 받은 다는 것을 확인:
 
 
 ```
-# 책 재고 관리 (Book) 서비스를 잠시 내려놓음 (ctrl+c)
+# 책(Book) 서비스를 잠시 내려놓음 (ctrl+c)
 
-#주문처리
+#도서대여요청(BookRentalRequest) 처리
 http POST localhost:8088/orders bookId=1 qty=10 customerId=1   #Fail
 http POST localhost:8088/orders bookId=2 qty=20 customerId=2   #Fail
 
-#재고 관리 서비스 재기동
+#도서(Book) 서비스 재기동
 cd Book
 mvn spring-boot:run
 
-#주문처리
+#도서대여요청(BookRentalRequest) 처리
 http POST localhost:8088/orders bookId=1 qty=10 customerId=1   #Success
 http POST localhost:8088/orders bookId=2 qty=20 customerId=2   #Success
 ```
-추후 운영단계에서는 Circuit Breaker를 이용하여 재고 관리 시스템에 장애가 발생하여도 주문 접수는 가능하도록 개선할 예정이다.
+추후 운영단계에서는 Circuit Breaker를 이용하여 도서확인(Book) 서비스에 장애가 발생하여도 도서대여 신청은 받을 수 있도록 개선된 것을 보일 것임.
 
 
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
 
-주문이 이루어진 후에 배송 시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 배송 시스템의 처리를 위하여 주문이 블로킹 되지 않도록 처리한다.
+도서대여요청(BookRentalRequest)이 이루어진 후에 도서대여(BookRental) 서비스에 요청을 알려즈는 이벤트 처리 방식을 비 동기식(Pub/Sub)으로 처리하여 도서대여요청이 블로킹 되지 않도록 처리한다.
  
-- 이를 위하여 주문이력에 기록을 남긴 후에 곧바로 주문이 완료되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
+- 이를 위하여 도서대여요청(BookRentalReques)에서의 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
-package onlinebookstore;
+package bookrental;
+...
 
 @Entity
-@Table(name="Order_table")
-public class Order {
+@Table(name="BookRequest_table")
+public class BookRequest {
 
- ...
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Long requestId;
+    private Long memberId;
+    private Long bookId;
+    private Integer qty;
+    private String status = "Book Requested";
+
     @PostPersist
     public void onPostPersist(){
-        if(this.status.equals("Ordered"))
-        {
-            Ordered ordered = new Ordered();
-            BeanUtils.copyProperties(this, ordered);
-            ordered.publishAfterCommit();
-            System.out.println("** PUB :: Ordered : orderId="+this.orderId);
-        }
-        else
-        {
-            OutOfStocked outOfStocked = new OutOfStocked();
-            BeanUtils.copyProperties(this, outOfStocked);
-            outOfStocked.publish();
-            System.out.println("** PUB :: OutOfStocked : orderId="+this.orderId);
-        }
+
+        BookRentalRequestApplication.applicationContext.getBean(bookrental.external.BookService.class)
+        .checkBookQtyAndModifyQty(this.getBookId(), this.getQty());
+
+        BookRequested bookRequested = new BookRequested();
+        BeanUtils.copyProperties(this, bookRequested);
+        bookRequested.publishAfterCommit();
     }
 
-}
 ```
-- 배송관리 서비스에서는 주문 완료 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 도서대여(BookRental) 마이크로 서비스에서는 도서대여요청 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
 
 ```
-package onlinebookstore;
+package bookrental;
 
 ...
 
 @Service
 public class PolicyHandler{
+    @Autowired BookRentalRepository bookRentalRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverOrdered_Delivery(@Payload Ordered ordered){
+    public void wheneverBookRequested_LendBook(@Payload BookRequested bookRequested){
 
-        if(!ordered.validate()) return;
+        if(!bookRequested.validate()) return;
 
-        System.out.println("\n\n##### listener Delivery : " + ordered.toJson() + "\n\n");
+        System.out.println("\n\n##### listener LendBook : " + bookRequested.toJson() + "\n\n");
 
-        Delivery delivery = new Delivery();
-        
-        delivery.setOrderid(ordered.getOrderId());
-        delivery.setDeliverystatus("Order-Delivery");         
-        
-        deliveryRepository.save(delivery);
-            
+        // 책을 빌려주면 상태(status)를 "Book Lent"로 변경한다.
+        BookRental bookRental = new BookRental();
+
+        bookRental.setBookId(bookRequested.getBookId());
+        bookRental.setBookStatus("GOOD");  // 책을 빌려줄때 책 상태는 "GOOD"으로 설정
+        bookRental.setMemberId(bookRequested.getMemberId());
+        bookRental.setQty(bookRequested.getQty());
+        bookRental.setStatus("Book Lent !!");
+        bookRentalRepository.save(bookRental);
+
     }
-}
 
 ```
 
-배송 시스템은 주문/재고관리와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 배송 시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다:
+도서대여(BookRental) 서비스는 도서대여신청(BookRentalRequest)/도서(Book) 서비스와 완전히 분리되어 있으며, 이벤트 수신에 따라 처리되기 때문에 도서대여(BookRental) 서비스가 유지보수로 인해 잠시 내려간 상태라도 도서대여신청(BookRentalRequest)을 받는데 문제가 없다: 없다:
 ```
-# 배송관리 서비스 (Delivery) 를 잠시 내려놓음 (ctrl+c)
+# 도서대여 서비스 (BookRental) 를 잠시 내려놓음 (ctrl+c)
 
-#주문처리
+#도서대여요청 처리
 http POST localhost:8088/orders bookId=1 qty=10 customerId=1   #Success
 http POST localhost:8088/orders bookId=2 qty=20 customerId=2   #Success
 
-#주문상태 확인
-http localhost:8088/orders     # 주문상태 안바뀜 확인
+#도서대여 상태 확인
+http localhost:8088/bookRentalRequests     # 도서대여요청 상태 안바뀜 확인
 
-#배송 서비스 기동
-cd Delivery
+#도서대여 서비스 기동
+cd bookRental
 mvn spring-boot:run
 
-#주문상태 확인
-http localhost:8080/orders     # 모든 주문의 상태가 "Delivery Started"로 확인
+#도서대여요청 상태 확인
+http localhost:8080/bookRentalRequests     # 모든 도서대여신청의 상태가 "Book Let"로 되어있음을 확인
 ```
 
 

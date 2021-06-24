@@ -63,11 +63,11 @@
 
 
 ### 이벤트 도출
-![image](https://user-images.githubusercontent.com/20077391/118743015-7868d300-b88c-11eb-9460-cca173f9495b.png)
+![image](https://user-images.githubusercontent.com/82795757/123209504-a8466e80-d4fb-11eb-8b6b-6aa6657e90da.png)
+![image](https://user-images.githubusercontent.com/82795757/123209515-b09ea980-d4fb-11eb-9450-f5098ac8577c.png)
 
-### 부적격 이벤트 탈락
-![image](https://user-images.githubusercontent.com/20077391/118743271-fe851980-b88c-11eb-846a-b429ae67849c.png)
-
+### 중복된 의미 이거나 불필요한 이벤트 제외
+![image](https://user-images.githubusercontent.com/82795757/123209661-e5aafc00-d4fb-11eb-9444-f0de37e46e73.png)
 
 ### 완성된 1차 모형
 

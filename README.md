@@ -706,7 +706,7 @@ cd bookRental
 mvn spring-boot:run
 
 #도서대여요청 상태 확인
-http localhost:8080/bookRentalRequests     # 모든 도서대여신청의 상태가 "Book Let"로 되어있음을 확인
+http localhost:8080/bookRentalRequests     # 모든 도서대여신청의 상태가 "Book Lent"로 되어있음을 확인
 ```
 
 

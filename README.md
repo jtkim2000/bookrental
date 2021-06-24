@@ -1017,16 +1017,13 @@ siege -c1 -t180S -r100 --content-type "application/json" 'http://member:8080/mem
 
 먼저 member 이미지가 v1.0 임을 확인
 
-![image](https://user-images.githubusercontent.com/20077391/120979102-31e20680-c7b0-11eb-8bb6-53481781e62c.png)
+![image](https://user-images.githubusercontent.com/82795757/123321403-e7ada300-d56d-11eb-89af-c43075594618.png)
+
 
 새 버전으로 배포(이미지를 v2.0으로 변경)
 ```
 kubectl set image deployment member member=jtkimacr.azurecr.io/member:v2.0
 ```
-
-member 이미지가 변경되는 과정 (POD 상태변화)
-![image](https://user-images.githubusercontent.com/20077391/120978979-0bbc6680-c7b0-11eb-91e9-7317f2b15ee8.png)
-
 
 member 이미지가 v2.0으로 변경되었임을 확인
 

@@ -844,48 +844,51 @@ spec:
 
 --> kubectl get all
 
-![image](https://user-images.githubusercontent.com/82795757/123262040-6c7acb80-d532-11eb-9c0d-fa95d52179de.png)
+![image](https://user-images.githubusercontent.com/82795757/123262563-f88cf300-d532-11eb-9367-49b541a445bb.png)
 
 
 ## ConfigMap 
 - 시스템별로 변경 가능성이 있는 설정들을 ConfigMap을 사용하여 관리
-- OnlineBookStore에서는 주문에서 책 재고 서비스 호출 시 "호출 주소"를 ConfigMap 처리하기로 결정
+- OBookRental 과제에서는 경고장 서비스에서 경고장 발송 시 “경고장 내용”을 ConfigMap처리하기로 함.
+  --> configmap 환경변수의 내용은 "PleaseCareBook"으로 설정하고 경고장 발송 시 활용
 
-- Java 소스에 "호출 주소"를 변수(api.url.book) 처리(/Order/src/main/java/onlinebookstore/external/BookService.java) 
+- Java 소스에 경고장 내용을 를 변수(api.url.book) 처리(/Order/src/main/java/onlinebookstore/external/BookService.java) 
+  시스템의 환경변수인 configmap의 값("PleaseCareBook")을 가져와서 warningMsg 변수에 저장
+        --> private String warningMsg = System.getenv("configmap");
+        
+  경고장 발송 위해 시스템 환경변수인 configmap의 값으로 경고장을 발송한다.(화면 출력)
+
+![image](https://user-images.githubusercontent.com/82795757/123263297-c3cd6b80-d533-11eb-8c4b-72307d3c7a8e.png)
 
 
-![image](https://user-images.githubusercontent.com/20077391/120964977-24705080-c79f-11eb-8e5b-be9f8e6d2128.png)
-
-
-- application.yml 파일에서 api.url.book을 ConfigMap과 연결
-
-
-![image](https://user-images.githubusercontent.com/20077391/120963090-f0dff700-c79b-11eb-88b4-247efe73a301.png)
+- application.yml 파일에 configmap 연결
+![image](https://user-images.githubusercontent.com/82795757/123264650-30953580-d535-11eb-9705-c4183e64befc.png)
 
 
 - ConfigMap 생성
 
 ```
-kubectl create configmap resturl --from-literal=url=http://Book:8080
+kubectl create configmap warnmsg --from-literal=msg=PleaseCareBook
+
 ```
 
 - Deployment.yml 에 ConfigMap 적용
 
-![image](https://user-images.githubusercontent.com/20077391/120965103-58e40c80-c79f-11eb-8abd-d3a98048166e.png)
+![image](https://user-images.githubusercontent.com/82795757/123264907-73570d80-d535-11eb-9f12-a6153111d521.png)
 
 
 ## Secret 
-- DBMS 연결에 필요한 username 및 password는 민감한 정보이므로 Secret 처리하였다.
+- DBMS 연결에 필요한 username 및 password는 민감한 정보이므로 application.yml에서 Secret 처리하였다.
 
-![image](https://user-images.githubusercontent.com/20077391/121105591-59cc7b00-c83f-11eb-96b7-e9649498fdf2.png)
+![image](https://user-images.githubusercontent.com/82795757/123265302-de084900-d535-11eb-9704-cad58ac46e81.png)
 
 - deployment.yml에서 env로 설정하였다.
 
-![image](https://user-images.githubusercontent.com/20077391/121105685-841e3880-c83f-11eb-9c3e-645f4a21cb8a.png)
+![image](https://user-images.githubusercontent.com/82795757/123265438-06904300-d536-11eb-824d-230134059b55.png)
 
-- 쿠버네티스에서는 다음과 같이 Secret object를 생성하였다.
+- 쿠버네티스에서는 다음과 같이 Secret object를 생성하였다.(secret.yml)
 
-![image](https://user-images.githubusercontent.com/20077391/121105756-a9ab4200-c83f-11eb-902a-bc276651bf7b.png)
+![image](https://user-images.githubusercontent.com/82795757/123265633-32abc400-d536-11eb-8f4a-cbe15c609970.png)
 
 
 ## Circuit Breaker와 Fallback 처리

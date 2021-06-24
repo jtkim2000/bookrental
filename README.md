@@ -1016,6 +1016,7 @@ siege -c1 -t180S -r100 --content-type "application/json" 'http://member:8080/mem
 ```
 
 먼저 member 이미지가 v1.0 임을 확인
+
 ![image](https://user-images.githubusercontent.com/20077391/120979102-31e20680-c7b0-11eb-8bb6-53481781e62c.png)
 
 새 버전으로 배포(이미지를 v2.0으로 변경)

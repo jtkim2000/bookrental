@@ -849,7 +849,7 @@ spec:
 
 ## ConfigMap 
 - 시스템별로 변경 가능성이 있는 설정들을 ConfigMap을 사용하여 관리
-- OBookRental 과제에서는 경고장 서비스에서 경고장 발송 시 “경고장 내용”을 ConfigMap처리하기로 함.
+- 도서대여서비스 프로젝트 과제에서는 경고장 서비스에서 경고장 발송 시 “경고장 내용”을 ConfigMap처리하기로 함.
   --> configmap 환경변수의 내용은 "PleaseCareBook"으로 설정하고 경고장 내용으로 지정
 
 - Java 소스에 “경고장 내용”을 환경변수 configmap의 값을 읽어와 경고장 내용을 화면 출력 처리.(/warningletter/src/main/java/bookrental/WarningLetter.java) 

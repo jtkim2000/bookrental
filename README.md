@@ -73,8 +73,7 @@
 ![image](https://user-images.githubusercontent.com/82795757/123209949-4cc8b080-d4fc-11eb-8d19-06f32242143e.png)
 
 ### 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
-
-![image](https://user-images.githubusercontent.com/9324206/118841865-a63d2e80-b903-11eb-90ed-e044f2feb128.png)
+![image](https://user-images.githubusercontent.com/82795757/123211709-c8c3f800-d4fe-11eb-8305-62a55571c88a.png)
 
     1. 신규 사용자는 회원 등록을 한다.
     2. 사서는 신규 도서를 등록한다.

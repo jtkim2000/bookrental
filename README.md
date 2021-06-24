@@ -952,7 +952,7 @@ bookId가 5번 인 경우 Circuit Breaker에 의한 timeout 발생 확인
 
 
 ### 오토스케일 아웃
-주문 서비스가 몰릴 경우를 대비하여 자동화된 확장 기능을 적용하였다.
+도서대여요청(book 서비스가 몰릴 경우를 대비하여 자동화된 확장 기능을 적용하였다.
 
 - 주문서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 테스트를 위해 CPU 사용량이 50프로를 넘어서면 replica 를 3개까지 늘려준다:
 ```
@@ -1006,10 +1006,10 @@ Shortest transaction:           0.11
 ## Zero-downtime deploy (Readiness Probe) 무정지 재배포
 
 * Zero-downtime deploy를 위해 readiness Probe를 설정함
-![image](https://user-images.githubusercontent.com/20077391/121024696-6e792680-c7df-11eb-8cc3-ad8e1cbda949.png)
+![image](https://user-images.githubusercontent.com/82795757/123316046-5a675000-d567-11eb-8467-f3090d5190d3.png)
 
 
-* Zero-downtime deploy 확인을 위해 seige 로 1명이 지속적인 고객등록 작업을 수행함
+* Zero-downtime deploy 확인을 위해 seige 로 1명이 지속적인 회원등록 작업을 수행함
 ```
 siege -c1 -t180S -r100 --content-type "application/json" 'http://localhost:8080/customers POST {"name": "CUSTOMER99","email":"CUSTOMER99@onlinebookstore.com"}'
 ```
@@ -1059,7 +1059,7 @@ bookrental/member/kubernetes/deployment.yml
 ![image](https://user-images.githubusercontent.com/82795757/123299314-5aaa2000-d554-11eb-899e-4da61f70fd65.png)
 
 
-- Delivery pod에 Liveness Probe 옵션 적용 및 작동 확인
+- Member pod에 Liveness Probe 옵션 적용 및 작동 확인
 
 ![image](https://user-images.githubusercontent.com/82795757/123301819-05bbd900-d557-11eb-9854-b0c56fab1cf0.png)
 
@@ -1071,4 +1071,4 @@ bookrental/member/kubernetes/deployment.yml
 
 이상으로 12가지 체크포인트가 구현 및 검증 완료되었음 확인하였다.
 
-# 끗~
+# [END]

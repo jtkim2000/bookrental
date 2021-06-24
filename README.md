@@ -1006,27 +1006,28 @@ Shortest transaction:           0.11
 ## Zero-downtime deploy (Readiness Probe) 무정지 재배포
 
 * Zero-downtime deploy를 위해 readiness Probe를 설정함
+
 ![image](https://user-images.githubusercontent.com/82795757/123316046-5a675000-d567-11eb-8467-f3090d5190d3.png)
 
 
 * Zero-downtime deploy 확인을 위해 seige 로 1명이 지속적인 회원등록 작업을 수행함
 ```
-siege -c1 -t180S -r100 --content-type "application/json" 'http://localhost:8080/customers POST {"name": "CUSTOMER99","email":"CUSTOMER99@onlinebookstore.com"}'
+siege -c1 -t180S -r100 --content-type "application/json" 'http://member:8080/members POST {"name": "member99"}'
 ```
 
-먼저 customer 이미지가 v1.0 임을 확인
+먼저 member 이미지가 v1.0 임을 확인
 ![image](https://user-images.githubusercontent.com/20077391/120979102-31e20680-c7b0-11eb-8bb6-53481781e62c.png)
 
 새 버전으로 배포(이미지를 v2.0으로 변경)
 ```
-kubectl set image deployment customer customer=skccteam2acr.azurecr.io/customer:v2.0
+kubectl set image deployment member member=jtkimacr.azurecr.io/member:v2.0
 ```
 
-customer 이미지가 변경되는 과정 (POD 상태변화)
+member 이미지가 변경되는 과정 (POD 상태변화)
 ![image](https://user-images.githubusercontent.com/20077391/120978979-0bbc6680-c7b0-11eb-91e9-7317f2b15ee8.png)
 
 
-customer 이미지가 v2.0으로 변경되었임을 확인
+member 이미지가 v2.0으로 변경되었임을 확인
 ![image](https://user-images.githubusercontent.com/20077391/120979060-27c00800-c7b0-11eb-8915-93197a3174b5.png)
 
 - seige 의 화면으로 넘어가서 Availability가 100% 인지 확인 (무정지 배포 성공)

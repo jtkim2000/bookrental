@@ -51,7 +51,7 @@
 1. 트랜잭션
     1. 도서 대여 신청 수량만큼 도서 재고에 즉시 반영되어야 한다. (Sync 호출)
 1. 장애격리
-    1. 회원등록/도서대여(BookRental)/경고장/사유서/BookAdmin 관리 기능이 수행되지 않더라도 도서대여신청(BookRentalRequest)은 중단없이 신청 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
+    1. 회원/도서대여(BookRental)/경고장/사유서/BookAdmin 관리 기능이 수행되지 않더라도 도서대여신청(BookRentalRequest)은 중단없이 신청 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
     2. 회원등록 시스템이 과중되면 사용자를 잠시동안 받지 않고 재접속하도록 유도한다  Circuit breaker, fallback  <---수정필요
 
 
@@ -96,7 +96,7 @@
     
 ### 비기능 요구사항에 대한 검증
 
-![image](https://user-images.githubusercontent.com/9324206/118844711-249ad000-b906-11eb-9e37-42863a2b27ca.png)
+![image](https://user-images.githubusercontent.com/82795757/123218510-c49bd880-d506-11eb-9533-973fe6bde7eb.png)
 
     1. 도서 대여 요청이 들어오면 도서의 재고를 즉시 Sync 호출을 통해 확인하고 반영함.
     2. 회원/경고장/사유서/BookAdmin 서비스 기능이 수행되지 않더라도 도서대여신청(BookRentalRequest) 기능은 중단없이 

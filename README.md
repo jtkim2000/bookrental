@@ -69,11 +69,10 @@
 ### 중복된 의미 이거나 불필요한 이벤트 제외
 ![image](https://user-images.githubusercontent.com/82795757/123209661-e5aafc00-d4fb-11eb-9444-f0de37e46e73.png)
 
-### 완성된 1차 모형
+### 완성된 모형
+![image](https://user-images.githubusercontent.com/82795757/123209949-4cc8b080-d4fc-11eb-8d19-06f32242143e.png)
 
-![image](https://user-images.githubusercontent.com/9324206/118837153-8146bc80-b8ff-11eb-8062-360768763a8d.png)
-
-### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
+### 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
 
 ![image](https://user-images.githubusercontent.com/9324206/118841865-a63d2e80-b903-11eb-90ed-e044f2feb128.png)
 

@@ -344,71 +344,82 @@ Async (event-driven), Eventual Consistency
 ## Saga
 분석/설계 및 구현을 통해 이벤트를 Publish/Subscribe 하도록 구현하였다.
 [Publish]
-![image](https://user-images.githubusercontent.com/20077391/121020310-353eb780-c7db-11eb-9e6e-2a0b0f9917e2.png)
+![image](https://user-images.githubusercontent.com/82795757/123245322-abebec80-d51f-11eb-8b02-7c35dbb61e85.png)
 
 [Subscribe]
-![image](https://user-images.githubusercontent.com/20077391/121099508-ede41580-c832-11eb-826d-6f4d395193b0.png)
+![image](https://user-images.githubusercontent.com/82795757/123245600-f4a3a580-d51f-11eb-892f-49695f952eb0.png)
 
 
 ## CQRS
 Materialized View 를 구현하여, 타 마이크로서비스의 데이터 원본에 접근없이(Composite 서비스나 조인SQL 등 없이) 도 내 서비스의 화면 구성과 잦은 조회가 가능하게 구현해 두었다.
 
-본 프로젝트에서 View 역할은 CustomerCenter 서비스가 수행한다.
+이번 과제(Project)에서 View 역할은 BookAdmin 서비스가 수행한다.
 
-CQRS를 구현하여 주문건에 대한 상태는 Order 마이크로서비스의 접근없이 CustomerCenter의 마이페이지를 통해 조회할 수 있도록 구현하였다.
+CQRS를 구현하여 도서대여(BookRental) 건에 대한 상태는 BookRental 마이크로서비스의 접근없이 BookAdmin의 BookRentalMonitoringPage 페이지를 통해 조회할 수 있도록 구현하였다.
 
-- 주문(ordered) 실행 후 myPage 화면
+- 도서대여(Book Lent) 실행 후 BookRentalMonitoringPage 화면
 
-![image](https://user-images.githubusercontent.com/20077391/121016627-4f769680-c7d7-11eb-8f60-f9640223c1ec.png)
-
-
-- 주문취소(OrderCancelled) 후 myPage 화면
-
-![image](https://user-images.githubusercontent.com/20077391/120961678-3d760300-c799-11eb-829c-16f296d61f27.png)
+![image](https://user-images.githubusercontent.com/82795757/123247574-fff7d080-d521-11eb-97e6-8f9f71a3a4df.png)
 
 
-위와 같이 주문을 하게되면 Order -> Book -> Order -> Delivery 로 주문이 Assigend 되고
+- 도서반납(Book Returned) 후 BookRentalMonitoringPage 화면
 
-주문 취소가 되면 Status가 "Delivery Cancelled"로 Update 되는 것을 볼 수 있다.
+![image](https://user-images.githubusercontent.com/82795757/123248241-a9d75d00-d522-11eb-940e-70f5a64a9594.png)
+
+
+위와 같이 대여요청(BookRenralRequest)을 하면 BookRentalRequest -> Book -> BookRentalRequest -> BookRental 로 도서대여가 진행되고
+
+대여된 도서가 반납되면 status가 “Book Returned”로 Update됨을 확인할 수 있다..
 
 ## Correlation 
 각 이벤트 건(메시지)이 어떤 Policy를 처리할 때 어떤건에 연결된 처리건인지를 구별하기 위한 Correlation-key를 제대로 연결하였는지를 검증하였다.
-![image](https://user-images.githubusercontent.com/20077391/121104779-b333aa80-c83d-11eb-9110-e56c6be57c86.png)
+![image](https://user-images.githubusercontent.com/82795757/123248640-1d796a00-d523-11eb-9b6c-52832ad7ddb3.png)
 
-## GateWay 
+
+## Gateway 
 API GateWay를 통하여 마이크로 서비스들의 진입점을 통일할 수 있다.
-다음과 같이 GateWay를 적용하여 모든 마이크로서비스들은 http://localhost:8088/{context}로 접근할 수 있다.
+다음과 같이 Gateway를 적용하여 모든 마이크로서비스들은 http://localhost:8088/{context}로 접근할 수 있다.
 
 ``` (gateway) application.yaml
-
+============================
 server:
   port: 8088
+
 ---
+
 spring:
   profiles: default
   cloud:
     gateway:
       routes:
-        - id: CustomerCenter
+        - id: member
           uri: http://localhost:8081
           predicates:
-            - Path= /myPages/**
-        - id: Book
+            - Path=/members/** 
+        - id: book
           uri: http://localhost:8082
           predicates:
             - Path=/books/** 
-        - id: Order
+        - id: bookRentalRequest
           uri: http://localhost:8083
           predicates:
-            - Path=/orders/** 
-        - id: Delivery
+            - Path=/bookRequests/** 
+        - id: bookRental
           uri: http://localhost:8084
           predicates:
-            - Path=/deliveries/** 
-        - id: customer
+            - Path=/bookRentals/** 
+        - id: warningLetter
           uri: http://localhost:8085
           predicates:
-            - Path=/customers/** 
+            - Path=/warningLetters/** 
+        - id: reasonLetter
+          uri: http://localhost:8086
+          predicates:
+            - Path=/reasonLetters/** 
+        - id: bookAdmin
+          uri: http://localhost:8087
+          predicates:
+            - Path= /bookRentalMonitoringPages/**
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -419,32 +430,43 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
+
+
 ---
+
 spring:
   profiles: docker
   cloud:
     gateway:
       routes:
-        - id: customercenter
-          uri: http://customercenter:8080
+        - id: member
+          uri: http://member:8080
           predicates:
-            - Path= /marketingTargets/**,/outOfStockOrders/**,/myPages/**
-        - id: Book
-          uri: http://Book:8080
+            - Path=/members/** 
+        - id: book
+          uri: http://book:8080
           predicates:
             - Path=/books/** 
-        - id: Order
-          uri: http://Order:8080
+        - id: bookRentalRequest
+          uri: http://bookRentalRequest:8080
           predicates:
-            - Path=/orders/** 
-        - id: Delivery
-          uri: http://Delivery:8080
+            - Path=/bookRequests/** 
+        - id: bookRental
+          uri: http://bookRental:8080
           predicates:
-            - Path=/deliveries/** 
-        - id: customer
-          uri: http://customer:8080
+            - Path=/bookRentals/** 
+        - id: warningLetter
+          uri: http://warningLetter:8080
           predicates:
-            - Path=/customers/** 
+            - Path=/warningLetters/** 
+        - id: reasonLetter
+          uri: http://reasonLetter:8080
+          predicates:
+            - Path=/reasonLetters/** 
+        - id: bookAdmin
+          uri: http://bookAdmin:8080
+          predicates:
+            - Path= /bookRentalMonitoringPages/**
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -463,10 +485,10 @@ server:
 
 ## Polyglot
 
-각 마이크로서비스의 다양한 요구사항에 능동적으로 대처하고자 최적의 구현언어 및 DBMS를 선택할 수 있다.
-OnlineBookStore에서는 다음과 같이 2가지 DBMS를 적용하였다.
-- MySQL(쿠버네티스에서는 SQLServer) : Book, CustomerCenter, Customer, Delivery
-- H2    : Order
+마이크로 서비스에 대하여 로컬과 쿠버네티스의 DBMS 를 달리 구성하였다.
+BookRental 을 구성하는 마이크로서비스가 사용하는 DBMS를 다음과 같이 2가지 DBMS를 적용하였다.
+- 로컬에서의 DB 구성 ---- 모두 H2
+- 구버네티스 DB 구성 ---- SQL Server(member, book),  H2 (나머지 서비스)
 
 ```
 # (Book, CustomerCenter, Customer, Delivery) application.yml

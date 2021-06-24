@@ -315,10 +315,17 @@ http GET http://localhost:8088/bookRentalMonitoringPages
 
 1. 트랜잭션
 
-주문 시 재고가 부족할 경우 주문이 되지 않는다. (Sync 호출)
+도서 대여 신청하면 도서 재고가 신청 수량만큼 감소된다. (Sync 호출)
 
---> 재고보다 많은 양(qty)을 주문하였을 경우 OutOfStock으로 처리한다.
-![image](https://user-images.githubusercontent.com/20077391/121017541-59e56000-c7d8-11eb-8dc0-54e38c3f5872.png)
+--> 신청한 수량만큼 즉시(Sync) 감소됨을 확인함
+
+(도서 대여 신청 --> 당초 수량 200권에서 20권 신청)
+
+![image](https://user-images.githubusercontent.com/82795757/123233138-c53b6b80-d514-11eb-9e98-faf02da22c13.png)
+
+(대여 신청된 수량만큼 도서 수량 감소 --> 200에서 180권으로 20권 감소됨을 확인)
+
+![image](https://user-images.githubusercontent.com/82795757/123233415-0469bc80-d515-11eb-9056-f365bc53a7bb.png)
 
 
 2. 장애격리

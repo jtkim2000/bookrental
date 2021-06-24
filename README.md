@@ -1029,7 +1029,9 @@ member 이미지가 변경되는 과정 (POD 상태변화)
 
 
 member 이미지가 v2.0으로 변경되었임을 확인
-![image](https://user-images.githubusercontent.com/20077391/120979060-27c00800-c7b0-11eb-8915-93197a3174b5.png)
+
+![image](https://user-images.githubusercontent.com/82795757/123320638-fcd60200-d56c-11eb-848a-4ac8c2be2220.png)
+
 
 - seige 의 화면으로 넘어가서 Availability가 100% 인지 확인 (무정지 배포 성공)
 ```
@@ -1049,7 +1051,9 @@ Successful transactions:           0
 Failed transactions:               0
 Longest transaction:            0.29
 Shortest transaction:           0.00
+
 ```
+![image](https://user-images.githubusercontent.com/82795757/123320868-47f01500-d56d-11eb-8e7d-ae3da9cfd49c.png)
 
 
 # Self-healing (Liveness Probe)

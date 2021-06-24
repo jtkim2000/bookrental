@@ -1034,25 +1034,7 @@ member 이미지가 v2.0으로 변경되었임을 확인
 
 
 - seige 의 화면으로 넘어가서 Availability가 100% 인지 확인 (무정지 배포 성공)
-```
-** SIEGE 4.0.4
-** Preparing 1 concurrent users for battle.
-The server is now under siege...
-Lifting the server siege...
-Transactions:                  15793 hits
-Availability:                 100.00 %
-Elapsed time:                 179.41 secs
-Data transferred:               3.31 MB
-Response time:                  0.01 secs
-Transaction rate:              88.03 trans/sec
-Throughput:                     0.02 MB/sec
-Concurrency:                    0.99
-Successful transactions:           0
-Failed transactions:               0
-Longest transaction:            0.29
-Shortest transaction:           0.00
 
-```
 ![image](https://user-images.githubusercontent.com/82795757/123320868-47f01500-d56d-11eb-8e7d-ae3da9cfd49c.png)
 
 

@@ -875,11 +875,6 @@ kubectl create configmap warnmsg --from-literal=msg=PleaseCareBook
 ![image](https://user-images.githubusercontent.com/82795757/123270360-d13a2400-d53a-11eb-9477-6a1f431aa16e.png)
 
 
-```
-kubectl create configmap warnmsg --from-literal=msg=PleaseCareBook
-
-```
-
 - Deployment.yml 에 ConfigMap 적용
 
 ![image](https://user-images.githubusercontent.com/82795757/123264907-73570d80-d535-11eb-9f12-a6153111d521.png)

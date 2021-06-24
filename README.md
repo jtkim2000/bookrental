@@ -81,7 +81,7 @@
     4. 도서 대여신청 수량 만큼 재고를 감소시킨다. (Sync 호출)
     5. 회원에게 도서를 대여한다.
 
-![image](https://user-images.githubusercontent.com/9324206/118842116-e13f6200-b903-11eb-899b-b415d084e314.png)
+![image](https://user-images.githubusercontent.com/82795757/123212289-9070e980-d4ff-11eb-827d-4efe9bf2f430.png)
 
     1. 회원은 도서를 반납한다.
     2. 반납된 도서 수량 만큼 재고를 증가시킨다.
@@ -90,8 +90,8 @@
     
 ![image](https://user-images.githubusercontent.com/9324206/118843424-02ed1900-b905-11eb-9f30-502574dc47cc.png)
 
-    1. 고객은 회원가입을 한다.
-    2. 도서 주문 실적에 따라 고객의 마일리지 및 등급을 관리한다.
+    1. 경고장을 받은 회원은 사유서(reasonLetter)를 제출한다.
+    2. 사유서를 제출한 회원의 등급(AAA->BBB)과 상태(GOOD->BAD)를 원복시킨다..
     
     
 ### 비기능 요구사항에 대한 검증

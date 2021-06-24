@@ -253,48 +253,61 @@ http GET http://localhost:8088/bookRentalMonitoringPages
 1. 신규사용자는 회원 등록한다.
 
 --> 회원 등록을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123230705-7b518600-d512-11eb-9326-58e5d5e61970.png)
 
 
 2. 사서는 신규 도서를 등록한다.
 
 --> 신규 도서 등록을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123230911-ab008e00-d512-11eb-9931-f55c7657550f.png)
 
 
 3. 회원이 도서 대여 신청한다.
 
 --> 정상적으로 대여 신청됨을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123231043-cb304d00-d512-11eb-9577-49fa5193aace.png)
 
 
 4. 도서 대여 신청하면 도서가 대여 된다. 
 
 --> 정상적으로 대여됨을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123231297-0af73480-d513-11eb-8d04-5f9e09655657.png)
 
 
 5. 회원은 대여한 도서를 반납한다. 
 
 --> 정상적으로 반납됨을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123231549-43970e00-d513-11eb-903e-3e3a663ceb45.png)
 
 
 6. 반납된 도서의 상태가 불량(BAD)이면 경고장을 발송한다.
 
 --> 경고장 발송을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123231728-6f19f880-d513-11eb-9538-a6409be7401a.png)
 
 
 7. 경고장 받은 회원의 등급과 상태가 강등된다.
 
 --> 강등됨을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123231854-8d7ff400-d513-11eb-945a-0409637298db.png)
 
 
 8. 경고장 받은 회원이 사유서를 제출하면 회원의 등급과 상태가 원상복구된다.
 
+--> 경고장 받은 회원의 사유서 제출을 확인함.
+
+![image](https://user-images.githubusercontent.com/82795757/123232655-55c57c00-d514-11eb-869a-51dc7358fbc9.png)
+
+
 --> 원상복구됨을 확인함.
+
 ![image](https://user-images.githubusercontent.com/82795757/123232127-cfa93580-d513-11eb-9d96-87d6831a33ae.png)
 
 

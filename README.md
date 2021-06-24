@@ -870,11 +870,14 @@ spec:
 ```
 kubectl create configmap warnmsg --from-literal=msg=PleaseCareBook
 
+![image](https://user-images.githubusercontent.com/82795757/123266566-1f4d2880-d537-11eb-9b48-ba7d6c03c8b5.png)
+
 ```
 
 - Deployment.yml 에 ConfigMap 적용
 
 ![image](https://user-images.githubusercontent.com/82795757/123264907-73570d80-d535-11eb-9f12-a6153111d521.png)
+
 
 
 ## Secret 

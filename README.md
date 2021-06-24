@@ -119,62 +119,84 @@
 
 # 구현:
 
-분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 808n 이다)
+분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라 각각의 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다. 
+(각각의 포트넘버는 8081 ~ 808n 까지 부여되어 있다.)
 
 ```
 cd gateway
 mvn spring-boot:run
 
-cd Book
+cd member
 mvn spring-boot:run 
 
-cd customer
+cd book
 mvn spring-boot:run  
 
-cd CustomerCenter
+cd bookRentalRequest
 mvn spring-boot:run  
 
-cd Delivery
+cd bookRental
 mvn spring-boot:run  
 
-cd Order
+cd warningLetter
 mvn spring-boot:run  
-```
+
+cd reasonLetter
+mvn spring-boot:run  
+
+cd bookAdmin
+mvn spring-boot:run
 
 ## DDD 의 적용
 
-- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: (예시는 Order 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다. 
+- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였음. (아래 예시는 bookRentalRequest 마이크로 서비스) 
 
 ```
-package onlinebookstore;
+package bookrental;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
+import java.util.List;
 import java.util.Date;
 
 @Entity
-@Table(name="Order_table")
-public class Order {
+@Table(name="BookRequest_table")
+public class BookRequest {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long orderId;
+    private Long requestId;
+    private Long memberId;
     private Long bookId;
     private Integer qty;
-    private Integer price;
-    private Integer paymentId;
-    private Long customerId;
-    private Date orderDt;
-    private String status;
+    private String status = "Book Requested";
 
-    public Long getOrderId() {
-        return orderId;
+    @PostPersist
+    public void onPostPersist(){
+
+        BookRentalRequestApplication.applicationContext.getBean(bookrental.external.BookService.class)
+        .checkBookQtyAndModifyQty(this.getBookId(), this.getQty());
+
+        BookRequested bookRequested = new BookRequested();
+        BeanUtils.copyProperties(this, bookRequested);
+        bookRequested.publishAfterCommit();
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+
+    public Long getRequestId() {
+        return requestId;
     }
 
+    public void setRequestId(Long requestId) {
+        this.requestId = requestId;
+    }
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
     public Long getBookId() {
         return bookId;
     }
@@ -189,34 +211,6 @@ public class Order {
     public void setQty(Integer qty) {
         this.qty = qty;
     }
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-    public Integer getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(Integer paymentId) {
-        this.paymentId = paymentId;
-    }
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-    public Date getOrderDt() {
-        return orderDt;
-    }
-
-    public void setOrderDt(Date orderDt) {
-        this.orderDt = orderDt;
-    }
     public String getStatus() {
         return status;
     }
@@ -224,95 +218,81 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }
 
 
+
 ```
-- Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (MySQL or h2) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다. (로컬개발환경에서는 MySQL/H2를, 쿠버네티스에서는 SQLServer/H2를 각각 사용하였다)
+- Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (H2, SQL Server) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다. (로컬개발환경에서는 모두 H2를, 쿠버네티스에서는 H2와 SQLServer를 각각 사용하였다)
 ```
-package onlinebookstore;
+package bookrental;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(collectionResourceRel="orders", path="orders")
-public interface OrderRepository extends PagingAndSortingRepository<Order, Long>{
+@RepositoryRestResource(collectionResourceRel="bookRequests", path="bookRequests")
+public interface BookRequestRepository extends PagingAndSortingRepository<BookRequest, Long>{
 }
-
 ```
 - 적용 후 REST API 의 테스트
 ```
-# Order 서비스의 주문처리
-http POST localhost:8088/orders bookId=1 qty=1 customerId=1
+# bookRentalRequest (도서대여 요청) 서비스의 요청처리
+http POST http://localhost:8088/bookRequests memberId=1 bookId=1 qty=10
 
-# Book 서비스의 재입고
-http PATCH http://localhost:8088/books/reStock bookId=1  stock=1000
-
-# 주문 상태 확인
-http GET localhost:8088/myPages/
+# 도서 대여 요청 상태 확인
+http GET http://localhost:8088/bookRentalMonitoringPages
 
 ```
 
 ## 기능적 요구사항 검증
 
-1. 고객이 도서를 주문한다.
+1. 신규사용자는 회원 등록한다.
 
---> 정상적으로 주문됨을 확인하였음
+--> 회원 등록을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121013903-5e0f7e80-c7d4-11eb-9edf-6c77e4233085.png)
 
 
-2. 고객이 주문을 취소할 수 있다.
+2. 사서는 신규 도서를 등록한다.
 
---> 정상적으로 취소됨을 확인하였음
+--> 신규 도서 등록을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121015316-d165c000-c7d5-11eb-89ae-4ef61c90adc9.png)
 
 
-3. 주문이 성공하면 배송을 시작한다.
+3. 회원이 도서 대여 신청한다.
 
---> 정상적으로 배송 시작됨을 확인하였음
+--> 정상적으로 대여 신청됨을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121014192-aa5abe80-c7d4-11eb-8b9f-f17e51662769.png)
 
 
-4. 주문이 취소되면 배송을 취소한다.
+4. 도서 대여 신청하면 도서 대여가 된다. 
 
---> 주문과 배송 시스템에서 각각 취소되었음을 확인하였음
+--> 정상적으로 대여됨을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121015454-f9edba00-c7d5-11eb-885b-af20cf53cd22.png)
 
 
-5. 관리자가 신규도서를 등록한다.
+5. 회원은 대여한 도서를 반납한다. 
 
---> 정상적으로 등록됨을 확인하였음
+--> 정상적으로 반납됨을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121013489-d7f33800-c7d3-11eb-8c46-3e40e5fc6be3.png)
 
 
-6. 관리자가 도서 재고를 추가한다.
+6. 반납된 도서의 상태가 불량(BAD)이면 경고장을 발송한다.
 
---> 정상적으로 재고가 늘어남을 확인하였음
+--> 경고장 발송을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121015711-41744600-c7d6-11eb-96da-c11b1a800f93.png)
 
 
-7. 고객은 회원가입을 한다.
+7. 경고장 받은 회원의 등급과 상태가 강등된다.
 
---> 정상적으로 등록됨을 확인하였음
+--> 강등됨을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121013551-eccfcb80-c7d3-11eb-99e9-5946cf5cf5bd.png)
 
 
-8. 도서 주문 실적에 따라 고객의 마일리지 및 등급을 관리한다.
+8. 경고장 받은 회원이 사유서를 제출하면 회원의 등급과 상태가 원상복구된다.
 
---> 주문했던 고객의 등급과 마일리지가 올라간 것을 알 수 있다.
+--> 원상복구됨을 확인함.
 ![image](https://user-images.githubusercontent.com/20077391/121014460-f7d72b80-c7d4-11eb-8b35-6e3a8ffa08bc.png)
-
-
-9. 신규 도서가 등록되면 기존 고객에게 알려준다.
-
---> SNS가 발송됨을 확인하였음
-![image](https://user-images.githubusercontent.com/20077391/121014951-7633cd80-c7d5-11eb-94f1-cf704f4a9fc1.png)
-
-
-10. 도서가 재입고되면 재고부족으로 못 구매한 고객에게 알려준다.
-
---> SNS가 발송됨을 확인하였음
-![image](https://user-images.githubusercontent.com/20077391/121015814-6072d800-c7d6-11eb-9786-c02c5a48189b.png)
 
 
 ## 비기능적 요구사항 검증

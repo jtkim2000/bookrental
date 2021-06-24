@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: bookrentalrequest
-          image: jtkim2000acr.azurecr.io/bookrentalrequest:latest
+          image: jtkimacr.azurecr.io/bookrentalrequest:latest
           ports:
             - containerPort: 8080
           readinessProbe:

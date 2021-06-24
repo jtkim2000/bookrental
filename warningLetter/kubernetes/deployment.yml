@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: warningletter
-          image: jtkim2000acr.azurecr.io/warningletter:latest
+          image: jtkimacr.azurecr.io/warningletter:latest
           ports:
             - containerPort: 8080
           readinessProbe:

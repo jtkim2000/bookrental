@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: reasonletter
-          image: jtkim2000acr.azurecr.io/reasonletter:latest
+          image: jtkimacr.azurecr.io/reasonletter:latest
           ports:
             - containerPort: 8080
           readinessProbe:

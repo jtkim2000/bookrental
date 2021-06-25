@@ -952,9 +952,9 @@ bookId가 5번 인 경우 Circuit Breaker에 의한 timeout 발생 확인
 
 
 ### 오토스케일 아웃
-도서대여요청(book 서비스가 몰릴 경우를 대비하여 자동화된 확장 기능을 적용하였다.
+도서대여요청(bookRentalRequest) 서비스가 몰릴 경우를 대비하여 자동화된 확장 기능을 적용하였다.
 
-- 주문서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 테스트를 위해 CPU 사용량이 50프로를 넘어서면 replica 를 3개까지 늘려준다:
+- 도서대여요청 서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 테스트를 위해 CPU 사용량이 50프로를 넘어서면 replica 를 3개까지 늘려준다:
 ```
 hpa.yml
 ```
@@ -982,7 +982,7 @@ kubectl get deploy -l app=bookrentalrequest -w
 ![image](https://user-images.githubusercontent.com/82795757/123352049-7be12f80-d599-11eb-8ac9-5da6c8b7ef29.png)
 
 
-- siege 의 로그를 보면 오토스케일 확장이 일어나며 주문을 100% 처리완료한 것을 알 수 있었다.
+- siege 의 로그를 보면 오토스케일 확장이 일어나며 도서대여요청을 100% 처리완료한 것을 알 수 있었다.
 ```
 ** SIEGE 4.0.4
 ** Preparing 100 concurrent users for battle.

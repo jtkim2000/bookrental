@@ -982,24 +982,8 @@ kubectl get deploy -l app=bookrentalrequest -w
 ![image](https://user-images.githubusercontent.com/82795757/123352049-7be12f80-d599-11eb-8ac9-5da6c8b7ef29.png)
 
 
-- siege 의 로그를 보면 오토스케일 확장이 일어나며 도서대여요청을 100% 처리완료한 것을 알 수 있었다.
+- siege 의 로그를 보면 오토스케일 확장이 일어나며 도서대여요청을 90% 이상 처리 완료한 것을 확인할 수 있음(아쉽게도 100%가 안됨)
 ```
-** SIEGE 4.0.4
-** Preparing 100 concurrent users for battle.
-The server is now under siege...
-Lifting the server siege...
-Transactions:                   2904 hits
-Availability:                 100.00 %        
-Elapsed time:                  59.64 secs     
-Data transferred:               0.90 MB       
-Response time:                  2.02 secs     
-Transaction rate:              48.69 trans/sec
-Throughput:                     0.02 MB/sec   
-Concurrency:                   98.52
-Successful transactions:        2904
-Failed transactions:               0
-Longest transaction:           13.62
-Shortest transaction:           0.11
 ```
 ![image](https://user-images.githubusercontent.com/82795757/123352207-cc588d00-d599-11eb-8c40-1ab4bf30b364.png)
 

@@ -969,17 +969,18 @@ deployment.yml
 
 - 100명이 60초 동안 주문을 넣어준다.
 ```
-siege -c100 -t60S -r10 --content-type "application/json" 'http://52.141.32.129:8080/orders POST {"bookId":"1","customerId":"1","qty":"1"}
+siege -c100 -t60S -r10 --content-type "application/json" 'http://BookRentalRequest:8080/bookRequests POST {"memberId":"1","bookId":"6","qty":"1"}'
 ```
 
 - 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다:
 ```
-kubectl get deploy -l app=order -w
+kubectl get deploy -l app=bookrentalrequest -w
 ```
 
 - 어느정도 시간이 흐른 후 스케일 아웃이 벌어지는 것을 확인할 수 있다.
 
-![image](https://user-images.githubusercontent.com/20077391/120974885-9babe180-c7ab-11eb-9a84-07bfb408ed34.png)
+![image](https://user-images.githubusercontent.com/82795757/123352049-7be12f80-d599-11eb-8ac9-5da6c8b7ef29.png)
+
 
 - siege 의 로그를 보면 오토스케일 확장이 일어나며 주문을 100% 처리완료한 것을 알 수 있었다.
 ```
@@ -1000,6 +1001,7 @@ Failed transactions:               0
 Longest transaction:           13.62
 Shortest transaction:           0.11
 ```
+![image](https://user-images.githubusercontent.com/82795757/123352207-cc588d00-d599-11eb-8c40-1ab4bf30b364.png)
 
 
 

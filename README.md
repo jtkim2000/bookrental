@@ -344,9 +344,11 @@ Async (event-driven), Eventual Consistency
 ## Saga
 분석/설계 및 구현을 통해 이벤트를 Publish/Subscribe 하도록 구현하였다.
 [Publish]
+
 ![image](https://user-images.githubusercontent.com/82795757/123245322-abebec80-d51f-11eb-8b02-7c35dbb61e85.png)
 
 [Subscribe]
+
 ![image](https://user-images.githubusercontent.com/82795757/123245600-f4a3a580-d51f-11eb-892f-49695f952eb0.png)
 
 

@@ -337,7 +337,7 @@ Async (event-driven), Eventual Consistency
 ![image](https://user-images.githubusercontent.com/82795757/123244463-eb660900-d51e-11eb-884b-ddeb0730f528.png)
 
 
-3. 도서(Book) 서비스가 과중되면 사용자를 잠시동안 받지않고 재접속하도록 유도한다. Circuit Breaker, fallback  <---- fallback 구현 후 수정 필요
+3. 도서(Book) 서비스가 과중되면 사용자를 잠시동안 받지않고 Circuit Breaker 로 차단(Time Out처리)후 다시 접속하도록 한다.
 
 --> 운영단계의 Hystrix를 통한 Circuit Breaker 구현에서 검증하도록 함.
 

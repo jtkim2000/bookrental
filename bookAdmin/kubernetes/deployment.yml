@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: bookadmin
-          image: jtkimacr.azurecr.io/bookadmin:latest
+          image: jtkim2000acr.azurecr.io/bookadmin:latest
           ports:
             - containerPort: 8080
           readinessProbe:
